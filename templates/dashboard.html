@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Nookmark Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="hero">
+
+        <div>
+
+            <h1>Nookmark</h1>
+
+            <p>
+                Organize, prioritize, and actually learn from your saved resources.
+            </p>
+
+        </div>
+
+        <a
+            href="/"
+            class="primary-btn"
+        >
+            + Add Resources
+        </a>
+
+    </header>
+
+
+    <section class="summary-grid">
+
+        <div class="summary-card">
+
+            <h3>Knowledge Debt</h3>
+
+            <h2>72</h2>
+
+            <span>Moderate</span>
+
+        </div>
+
+        <div class="summary-card">
+
+            <h3>Resources</h3>
+
+            <h2>{{ resources|length }}</h2>
+
+            <span>Total Saved</span>
+
+        </div>
+
+        <div class="summary-card">
+
+            <h3>Learning Time</h3>
+
+            <h2>--</h2>
+
+            <span>Coming Soon</span>
+
+        </div>
+
+        <div class="summary-card">
+
+            <h3>High Priority</h3>
+
+            <h2>--</h2>
+
+            <span>Coming Soon</span>
+
+        </div>
+
+    </section>
+
+
+    <section class="toolbar">
+
+        <input
+
+            type="text"
+
+            placeholder="Search resources..."
+
+        >
+
+        <select>
+
+            <option>All Types</option>
+            <option>Documentation</option>
+            <option>Article</option>
+            <option>YouTube</option>
+            <option>GitHub</option>
+            <option>Research Paper</option>
+
+        </select>
+
+        <button>
+
+            🧹 Reduce Knowledge Debt
+
+        </button>
+
+        <button>
+
+            🧠 Generate Learning Roadmap
+
+        </button>
+
+    </section>
+
+
+    <section class="resource-section">
+
+        <h2>Your Resources</h2>
+
+        <div class="resource-grid">
+
+            {% for resource in resources %}
+
+            <div class="resource-card">
+
+                <div class="resource-top">
+
+                    {% if resource.thumbnail %}
+
+                    <img
+                        src="{{ resource.thumbnail }}"
+                        class="thumbnail"
+                    >
+
+                    {% endif %}
+
+                    <div>
+
+                        <h3>
+
+                            {{ resource.title }}
+
+                        </h3>
+
+                        <p>
+
+                            {{ resource.source }}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <p class="description">
+
+                    {{ resource.description }}
+
+                </p>
+
+
+                <div class="tags">
+
+                    <span>{{ resource.type }}</span>
+
+                    <span>{{ resource.status }}</span>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <a
+
+                        href="{{ resource.url }}"
+
+                        target="_blank"
+
+                        class="visit"
+
+                    >
+
+                        Visit
+
+                    </a>
+
+                    <button>
+
+                        Completed
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <section class="analytics">
+
+        <h2>Knowledge Insights</h2>
+
+        <div class="analytics-grid">
+
+            <div class="chart-card">
+
+                Resource Types
+
+                <canvas id="resourceChart"></canvas>
+
+            </div>
+
+            <div class="chart-card">
+
+                Learning Balance
+
+                <canvas id="balanceChart"></canvas>
+
+            </div>
+
+            <div class="chart-card">
+
+                Completion Rate
+
+                <canvas id="completionChart"></canvas>
+
+            </div>
+
+            <div class="chart-card">
+
+                Learning Roadmap
+
+                <div class="roadmap-placeholder">
+
+                    AI recommendations will appear here.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+
+</html>

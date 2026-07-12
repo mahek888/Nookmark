@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Nookmark</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<div class="landing-container">
+
+    <div class="landing-content">
+
+
+        <h1>
+
+            Nookmark
+
+        </h1>
+
+        <p class="subtitle">
+
+            Organize, prioritize and actually learn from your saved resources.
+
+            <br><br>
+
+            Articles • Documentation • GitHub Repositories •
+            YouTube Videos • Research Papers
+
+        </p>
+
+
+        <form
+
+            action="{{ url_for('add') }}"
+
+            method="POST"
+
+            class="landing-form"
+
+        >
+
+            <textarea
+
+                name="urls"
+
+                placeholder="Paste one or more URLs (one per line)..."
+
+                required
+
+            ></textarea>
+
+            <button type="submit">
+
+                 Analyze Resources
+
+            </button>
+
+        </form>
+
+
+        <div class="features">
+
+            <div class="feature-card">
+
+                📑
+
+                <h3>
+
+                    Metadata Extraction
+
+                </h3>
+
+                <p>
+
+                    Paste your link and automatically
+                    get info about the resource.
+
+                </p>
+
+            </div>
+
+            <div class="feature-card">
+
+                🧹
+
+                <h3>
+
+                    Reduce Knowledge Debt
+
+                </h3>
+
+                <p>
+
+                    Get rid of outdated or duplicated
+                    resources in one click!
+
+                </p>
+
+            </div>
+
+            <div class="feature-card">
+
+                ⭐
+
+                <h3>
+
+                    Updated Priority 
+                    Scoring
+
+                </h3>
+
+                <p>
+
+                    Know the perfect
+                    order to learn
+                    from your resources,
+                    also adapting to newly added
+                    links.
+
+                </p>
+
+            </div>
+
+            <div class="feature-card">
+
+                🪜
+
+                <h3>
+
+                    Roadmaps
+
+                </h3>
+
+                <p>
+
+                    Grouping and conversion of resources
+                    into an efficient learning path.
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <a
+
+            href="{{ url_for('dashboard') }}"
+
+            class="dashboard-link"
+
+        >
+
+            View your Knowledge Dashboard →
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
