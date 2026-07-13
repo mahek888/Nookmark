@@ -3,7 +3,9 @@ import uuid
 from pathlib import Path
 from datetime import datetime
 
+from services.scoring import calculate_priority_score
 from services.metadata import extract_metadata
+from urllib.parse import urlparse
 
 DATA_FILE = Path("data/resources.json")
 
@@ -31,6 +33,10 @@ def save_resources(resources):
 
 def add_resource(url):
 
+    if not is_valid_url(url):
+
+        return None
+
     resources = load_resources()
 
     metadata = extract_metadata(url)
@@ -38,38 +44,76 @@ def add_resource(url):
     if metadata is None:
         return None
     
-    resource = {
+    resource = metadata.copy()
 
-        "id": str(uuid.uuid4()),
+    resource["details"] = []
 
-        "url": metadata["url"],
+    if resource["type"] == "github_repo":
 
-        "type": metadata["type"],
+        resource["details"] = [
 
-        "title": metadata["title"],
+            f"⭐ {resource.get('stars', 0)} Stars",
 
-        "description": metadata["description"],
+            resource.get("language", "Unknown Language"),
 
-        "thumbnail": metadata["thumbnail"],
+            "Archived"
+            if resource.get("archived")
+            else "Active Repository"
 
-        "source": metadata["source"],
+        ]
 
-        "status": "saved",
+    elif resource["type"] == "github_profile":
 
-        "priority_score": 0,
+        resource["details"] = [
 
-        "knowledge_cluster": None,
+            f"👥 {resource.get('followers',0)} Followers",
 
-        "notes": "",
+            f"📦 {resource.get('public_repos',0)} Public Repositories"
 
-        "date_added": datetime.now().isoformat(timespec="seconds"),
+        ]
 
-        "estimated_time": None,
+    elif resource["type"] == "research_paper":
 
-        "completed_at": None,
+        details = []
 
-        "topic": None
-    }
+        if resource.get("authors"):
+            details.append(resource["authors"])
+
+        if resource.get("published"):
+            details.append(resource["published"][:10])
+
+        if resource.get("category"):
+            details.append(resource["category"])
+
+        resource["details"] = details
+
+    elif resource["type"] == "youtube":
+
+        resource["details"] = [
+
+            "YouTube Video"
+
+        ]
+
+    else:
+
+        resource["details"] = []
+
+    resource["id"] = str(uuid.uuid4())
+
+    resource["status"] = "saved"
+
+    resource["priority_score"] = calculate_priority_score(resource)
+
+    resource["knowledge_cluster"] = None
+
+    resource["estimated_time"] = None
+
+    resource["notes"] = ""
+
+    resource["completed_at"] = None
+
+    resource["date_added"] = datetime.now().isoformat(timespec="seconds")
 
     resources.append(resource)
 
@@ -77,7 +121,14 @@ def add_resource(url):
 
     return resource
 
+def is_valid_url(url):
+
+    parsed = urlparse(url)
+
+    return parsed.scheme in ("http", "https") and parsed.netloc != ""
+
 def delete_resource(resource_id):
+
 
     resources = load_resources()
 
@@ -115,8 +166,6 @@ def update_status(resource_id, status):
 
             resource["status"] = status
 
-            save_resources(resources)
+            break
 
-            return resource
-
-    return None
+    save_resources(resources)
