@@ -30,7 +30,7 @@
 
         <div>
 
-            <h1>Nookmark</h1>
+            <h1 style="color: rgb(195, 211, 255);">Nookmark</h1>
 
             <p>
                 Organize, prioritize, and actually learn from your saved resources.
@@ -50,52 +50,54 @@
 
     <section class="summary-grid">
 
-        <div class="summary-card">
+    <div class="summary-card">
 
-            <h3>Knowledge Debt</h3>
+        <h3>Knowledge Debt</h3>
 
-            <h2>72</h2>
+        <h2>{{ debt_score }}</h2>
 
-            <span>Moderate</span>
+        <span>Overall Score</span>
 
-        </div>
+    </div>
 
-        <div class="summary-card">
+    <div class="summary-card">
 
-            <h3>Resources</h3>
+        <h3>Resources</h3>
 
-            <h2>{{ resources|length }}</h2>
+        <h2>{{ resources|length }}</h2>
 
-            <span>Total Saved</span>
+        <span>Total Saved</span>
 
-        </div>
+    </div>
 
-        <div class="summary-card">
+    <div class="summary-card">
 
-            <h3>Learning Time</h3>
+        <h3>⏱ Learning Time</h3>
 
-            <h2>--</h2>
+        <h2>{{ learning_time }}</h2>
 
-            <span>Coming Soon</span>
+        <span>Estimated Backlog</span>
 
-        </div>
+    </div>
 
-        <div class="summary-card">
+    <div class="summary-card">
 
-            <h3>High Priority</h3>
+        <h3>High Priority</h3>
 
-            <h2>--</h2>
+        <h2>{{ high_priority }}</h2>
 
-            <span>Coming Soon</span>
+        <span>Needs Attention</span>
 
-        </div>
+    </div>
 
-    </section>
+</section>
 
 
     <section class="toolbar">
 
         <input
+
+            id="searchInput"
 
             type="text"
 
@@ -103,28 +105,23 @@
 
         >
 
-        <select>
-
-            <option>All Types</option>
-            <option>Documentation</option>
-            <option>Article</option>
-            <option>YouTube</option>
-            <option>GitHub</option>
-            <option>Research Paper</option>
+        <select id="typeFilter">
+            <option value="all">All Types</option>
+            <option value="generic">Generic</option>
+            <option value="github_repo">GitHub Repo</option>
+            <option value="github_profile">GitHub Profile</option>
+            <option value="youtube">YouTube</option>
+            <option value="research_paper">Research Paper</option>
 
         </select>
 
-        <button>
+        <form action="/reduce-knowledge-debt" method="POST">
 
-            🧹 Reduce Knowledge Debt
+            <button type="submit">
 
-        </button>
+                🧹 Reduce Knowledge Debt
 
-        <button>
-
-            🧠 Generate Learning Roadmap
-
-        </button>
+            </button>
 
     </section>
 
@@ -137,7 +134,39 @@
 
             {% for resource in resources %}
 
-            <div class="resource-card">
+            <div
+                class="resource-card"
+
+                data-title="{{ resource.title|lower }}"
+
+                data-type="{{ resource.type }}"
+            >
+
+                {% if resource.priority_score >= 80 %}
+
+                <div class="priority high">
+
+                    HIGH • {{ resource.priority_score }}
+
+                </div>
+
+                {% elif resource.priority_score >= 50 %}
+
+                <div class="priority medium">
+
+                    MEDIUM • {{ resource.priority_score }}
+
+                </div>
+
+                {% else %}
+
+                <div class="priority low">
+
+                    LOW • {{ resource.priority_score }}
+
+                </div>
+
+                {% endif %}
 
                 <div class="resource-top">
 
@@ -152,22 +181,13 @@
 
                     <div>
 
-                        <h3>
+                        <h3>{{ resource.title }}</h3>
 
-                            {{ resource.title }}
-
-                        </h3>
-
-                        <p>
-
-                            {{ resource.source }}
-
-                        </p>
+                        <p>{{ resource.source }}</p>
 
                     </div>
 
                 </div>
-
 
                 <p class="description">
 
@@ -183,6 +203,22 @@
                     <span>{{ resource.status }}</span>
 
                 </div>
+
+
+                {% if resource.details %}
+
+                <div class="resource-info">
+
+                    {% for item in resource.details %}
+
+                        <span>{{ item }}</span>
+
+                    {% endfor %}
+
+                </div>
+
+                {% endif %}
+
 
 
                 <div class="actions">
@@ -201,11 +237,41 @@
 
                     </a>
 
-                    <button>
+                    <form action="/delete/{{ resource.id }}" method="POST">
 
-                        Completed
+                        <button class="delete-btn">
 
-                    </button>
+                            Delete
+
+                        </button>
+
+                    </form>
+
+                    <form action="/update-status/{{ resource.id }}" method="POST">
+
+                        <select
+                            name="status"
+                            onchange="this.form.submit()"
+                        >
+
+                            <option value="saved"
+                                {% if resource.status=="saved" %}selected{% endif %}>
+                                Saved
+                            </option>
+
+                            <option value="in_progress"
+                                {% if resource.status=="in_progress" %}selected{% endif %}>
+                                In Progress
+                            </option>
+
+                            <option value="completed"
+                                {% if resource.status=="completed" %}selected{% endif %}>
+                                Completed
+                            </option>
+
+                        </select>
+
+                    </form>
 
                 </div>
 
@@ -226,7 +292,7 @@
 
             <div class="chart-card">
 
-                Resource Types
+                <h3>Resource Types</h3>
 
                 <canvas id="resourceChart"></canvas>
 
@@ -234,29 +300,34 @@
 
             <div class="chart-card">
 
-                Learning Balance
+                <h3>Learning Status</h3>
 
-                <canvas id="balanceChart"></canvas>
-
-            </div>
-
-            <div class="chart-card">
-
-                Completion Rate
-
-                <canvas id="completionChart"></canvas>
+                <canvas id="statusChart"></canvas>
 
             </div>
 
             <div class="chart-card">
 
-                Learning Roadmap
+                <h3 style="margin-bottom: 90px;">Priority Distribution</h3>
+
+                <canvas id="priorityChart"></canvas>
+
+            </div>
+
+            <div class="chart-card">
+
+                <h3>Learning Roadmap</h3>
 
                 <div class="roadmap-placeholder">
 
-                    AI recommendations will appear here.
+                    AI recommendations will appear here. 
+
+
+                    This feature is still under progress 🛠️
 
                 </div>
+
+            </div>
 
             </div>
 
@@ -267,6 +338,32 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+const resourceTypes = {{ resource_types|tojson }};
+
+const statusData = {
+
+    completed: {{ completed }},
+
+    in_progress: {{ in_progress }},
+
+    saved: {{ saved }}
+
+};
+
+const priorityData = {
+
+    high: {{ high }},
+
+    medium: {{ medium }},
+
+    low: {{ low }}
+
+};
+
+</script>
 
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
