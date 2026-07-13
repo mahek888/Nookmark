@@ -203,7 +203,9 @@ Create a `.env` file
 
 ```env
 YOUTUBE_API_KEY=YOUR_API_KEY
+GITHUB_TOKEN=your_github_personal_access_token_here
 ```
+
 
 Run the application
 
