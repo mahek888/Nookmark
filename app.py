@@ -13,7 +13,7 @@ from services.scoring import (
     calculate_knowledge_debt
 )
 
-from services.ai import generate_learning_roadmap
+# from services.ai import generate_learning_roadmap
 
 from services.resource_manager import update_status
 
@@ -180,20 +180,21 @@ def reduce_knowledge_debt_route():
 
     return redirect(url_for("dashboard"))
 
-@app.route("/roadmap", methods=["POST"])
+# WIP
+# @app.route("/roadmap", methods=["POST"])
 
-def roadmap():
+# def roadmap():
 
-    resources = load_resources()
+#     resources = load_resources()
 
-    roadmap = generate_learning_roadmap(resources)
+#     roadmap = generate_learning_roadmap(resources)
 
-    return render_template(
+#     return render_template(
 
-        "roadmap.html",
+#         "roadmap.html",
 
-        roadmap=roadmap
-    )
+#         roadmap=roadmap
+#     )
 
 @app.route("/update-status/<resource_id>", methods=["POST"])
 def update_resource_status(resource_id):
