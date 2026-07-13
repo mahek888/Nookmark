@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Learning Roadmap | Nookmark</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="hero">
+
+        <div>
+
+            <h1>🧠 AI Learning Roadmap</h1>
+
+            <p>
+                Generated from your saved learning resources.
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('dashboard') }}"
+            class="primary-btn"
+        >
+
+            ← Dashboard
+
+        </a>
+
+    </header>
+
+    {% if roadmap %}
+
+    <section class="resource-section">
+
+        <h2>Topic Clusters</h2>
+
+        <div class="resource-grid">
+
+            {% for cluster in roadmap.get("clusters", []) %}
+
+            <div class="resource-card">
+
+                <h3>{{ cluster.topic }}</h3>
+
+                <ul>
+
+                    {% for resource in cluster.resources %}
+
+                    <li>{{ resource }}</li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    <section class="resource-section">
+
+        <h2>Recommended Learning Roadmap</h2>
+
+        <div class="resource-card">
+
+            <ol>
+
+                {% for step in roadmap.get("roadmap", []) %}
+
+                <li>{{ step }}</li>
+
+                {% endfor %}
+
+            </ol>
+
+        </div>
+
+    </section>
+
+    {% else %}
+
+    <section class="resource-section">
+
+        <div class="resource-card">
+
+            <h2>Unable to generate roadmap.</h2>
+
+            <p>
+                Please try again in a few moments.
+            </p>
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+</div>
+
+</body>
+
+</html>
