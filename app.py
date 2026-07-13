@@ -47,12 +47,13 @@ def add():
         if not url:
             continue
 
-        if add_resource(url):
+        result = add_resource(url)
 
+        print(url, "->", result)
+
+        if result:
             added_urls.append(url)
-
         else:
-
             invalid_urls.append(url)
 
     if invalid_urls:

@@ -1,5 +1,6 @@
 import requests
 from urllib.parse import urlparse
+import os
 
 
 HEADERS = {
@@ -7,6 +8,10 @@ HEADERS = {
     "User-Agent": "Nookmark"
 }
 
+token = os.getenv("GITHUB_TOKEN")
+
+if token:
+    HEADERS["Authorization"] = f"Bearer {token}"
 
 def extract_github_repo_metadata(url):
 
