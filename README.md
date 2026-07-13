@@ -12,6 +12,38 @@ Instead of another bookmark list, Nookmark helps reduce **knowledge debt** by id
 
 ---
 
+## Screenshots
+
+### Landing Page
+
+![Landing Page](screenshots/ss1.png)
+
+---
+
+### Paste your links
+
+![paste](screenshots/ss2.png)
+
+---
+
+### Error handling of invalid URLs
+
+![error](screenshots/ss3.png)
+
+---
+
+### Full dashboard
+
+![dashboard full](screenshots/ss4.png)
+
+---
+
+### Search and filters
+
+![search](screenshots/ss5.png)
+
+---
+
 ## ⭐ Features
 
 ### ✦︎ Smart Resource Import
